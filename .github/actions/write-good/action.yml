@@ -1,0 +1,17 @@
+name: Write Good
+description: Run write-good on all Markdown files in the repository
+
+runs:
+  using: composite
+  steps:
+    - name: Run write-good
+      shell: bash
+      run: |
+        mapfile -t markdown_files < <(find . -name '*.md' -type f -not -path './.git/*' | sort)
+
+        if [ "${#markdown_files[@]}" -eq 0 ]; then
+          echo "No Markdown files found."
+          exit 1
+        fi
+
+        npx --yes write-good "${markdown_files[@]}"
